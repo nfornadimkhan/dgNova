@@ -17,7 +17,7 @@ setup(
         "pandas>=1.1.0",
         "matplotlib>=3.3.0",
         "seaborn>=0.11.0",
-        "Pillow"
+        "Pillow>=8.0.0"
     ],
     extras_require={
         'animation': [

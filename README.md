@@ -1,4 +1,8 @@
 [![Logo](documentation/logo.svg)](https://nfornadimkhan.github.io/dgNova/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python CI](https://github.com/nfornadimkhan/dgNova/actions/workflows/python-ci.yml/badge.svg)](https://github.com/nfornadimkhan/dgNova/actions/workflows/python-ci.yml)
+[![codecov](https://codecov.io/gh/nfornadimkhan/dgNova/branch/main/graph/badge.svg)](https://codecov.io/gh/nfornadimkhan/dgNova)
+[![PyPI version](https://badge.fury.io/py/dgNova.svg)](https://badge.fury.io/py/dgNova)
 
 # dgNova (Designs Nova)
 
@@ -13,6 +17,17 @@ dgNova ("Designs Nova") makes it easy to:
 - Analyze unreplicated field trials using moving grid methods
 - Visualize spatial patterns and adjustments
 - Learn experimental design concepts through interactive simulations
+
+## Dependencies
+
+dgNova is built using robust scientific Python libraries:
+- **NumPy**: For efficient numerical computations and array operations
+- **Pandas**: For data manipulation and analysis
+- **Matplotlib**: For creating static visualizations and plots
+- **Seaborn**: For enhanced statistical visualizations
+- **Pillow**: For image processing and animation support
+
+These dependencies are automatically installed when you install dgNova using pip.
 
 ## Current Status
 
@@ -73,7 +88,7 @@ unrep_sim = UNREP(
 )
 
 # Analyze simulated data
-results = unrep_sim.analyze()
+unrep_sim.analyze()
 ```
 
 ## Key Features of UNREP Class
@@ -102,13 +117,13 @@ results = unrep_sim.analyze()
 2. Visualization Methods:
    ```python
    # Plot spatial distribution
-   unrep.plot_spatial_analysis()
+   unrep_sim.plot_spatial_analysis()
    
    # Animate adjustment process
-   unrep.animate(frames=100, interval=100)
+   unrep_sim.animate(frames=100, interval=100)
    
    # Show detailed regions
-   unrep.plot_zoomed_regions()
+   unrep_sim.plot_zoomed_regions()
    ```
 
 ### Output Statistics
@@ -160,6 +175,8 @@ The moving grid method adjusts plot values based on local spatial patterns by:
    ```
    - Visualizes gradual transformation
    - Helps understand adjustment mechanism
+
+
 
 ## Contributing
 
