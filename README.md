@@ -175,6 +175,7 @@ MIT License
 
 ## Contact
 
-Author: Nadim Khan
-Email: nfornadim@gmail.com
-GitHub: https://github.com/nfornadimkhan/dgNova
+- Author: Nadim Khan
+- Email: nfornadim@gmail.com
+- Website: https://nadimkhan.org
+- GitHub: https://github.com/nfornadimkhan/dgNova
