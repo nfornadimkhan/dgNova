@@ -4,6 +4,8 @@
 
 A Python library for Statistical Analysis and Simulations of Plant Breeding Experiments, designed specifically for researchers and students who are new to programming but want to understand field design concepts through practical implementation.
 
+[![Sample Animation](examples/sample.gif)](https://nfornadimkhan.github.io/dgNova/)
+
 ## Overview
 
 dgNova ("Designs Nova") makes it easy to:
