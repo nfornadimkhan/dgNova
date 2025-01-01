@@ -4,7 +4,8 @@
 [![PyPI version](https://badge.fury.io/py/dgNova.svg)](https://badge.fury.io/py/dgNova)
 
 # dgNova (Designs Nova)
-[![Logo](documentation/logo.svg)](https://nfornadimkhan.github.io/dgNova/)
+[![Logo](/logo.svg)](https://nfornadimkhan.github.io/dgNova/)
+
 A Python library for Statistical Analysis and Simulations of Plant Breeding Experiments, designed specifically for researchers and students who are new to programming but want to understand field design concepts through practical implementation.
 
 ![sample](https://github.com/user-attachments/assets/03bc5ccc-201d-414e-88f9-ba4a7a3eedb9)
