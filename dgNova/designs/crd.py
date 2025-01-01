@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from .replicated_design import REP
 from ..core.statistics import Statistics
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class CRD(REP):
     """

@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 from dgNova.designs import UnreplicatedTrial
+from numpy.testing import assert_array_almost_equal
 
 class TestUnreplicatedTrial:
     @pytest.fixture
