@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from dgNova.designs import UnreplicatedTrial
+from dgNova.designs import UNREP
 from numpy.testing import assert_array_almost_equal
 
 class TestUnreplicatedTrial:
@@ -13,7 +13,7 @@ class TestUnreplicatedTrial:
         ])
     
     def test_initialization(self, sample_data):
-        trial = UnreplicatedTrial(rows=3, columns=4, data=sample_data)
+        trial = UNREP(rows=3, columns=4, data=sample_data)
         assert trial.rows == 3
         assert trial.columns == 4
         assert_array_almost_equal(trial.data, sample_data)
