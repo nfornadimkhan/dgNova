@@ -13,7 +13,11 @@ class TestUnreplicatedTrial:
         ])
     
     def test_initialization(self, sample_data):
-        trial = UNREP(rows=3, columns=4, data=sample_data)
-        assert trial.rows == 3
-        assert trial.columns == 4
-        assert_array_almost_equal(trial.data, sample_data)
+        trial = UNREP(
+            data=sample_data,
+            row='Row',              # row positions
+            column='Column',        # column positions
+            response='Yield'        # response variable
+        )
+        assert trial.data.shape == (3, 4)
+        assert_array_almost_equal(trial.data.values, sample_data)
