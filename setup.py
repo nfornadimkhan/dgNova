@@ -9,7 +9,7 @@ if os.path.exists("README.md"):
 
 setup(
     name="dgNova",
-    version="1.2.1",
+    version="1.2.2",
     packages=find_packages(),
     install_requires=[
         "numpy>=1.19.0",
