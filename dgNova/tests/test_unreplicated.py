@@ -23,6 +23,10 @@ class TestUnreplicatedTrial:
         assert_array_almost_equal(trial.data, sample_data)
         assert trial.design == 'moving_grid'  # Check default design
         assert not trial.is_simulated  # Should be False for real data
+        assert hasattr(trial, 'rows')
+        assert hasattr(trial, 'columns')
+        assert trial.rows == 3
+        assert trial.columns == 4
     
     def test_simulation_initialization(self):
         trial = UNREP(
@@ -73,9 +77,14 @@ class TestUnreplicatedTrial:
             data = sample_data
         else:
             import pandas as pd
-            data = pd.DataFrame(sample_data)
-            data.index.name = 'Row'
-            data.columns.name = 'Column'
+            # Create DataFrame with proper column structure
+            rows, cols = sample_data.shape
+            df_data = {
+                'Row': np.repeat(range(rows), cols),
+                'Column': np.tile(range(cols), rows),
+                'Yield': sample_data.flatten()
+            }
+            data = pd.DataFrame(df_data)
         
         trial = UNREP(data=data)
         assert trial.data.shape == sample_data.shape
