@@ -9,13 +9,13 @@ if os.path.exists("README.md"):
 
 setup(
     name="dgNova",
-    version="1.2.10",
+    version="1.2.12",
     packages=find_packages(),
     install_requires=[
         "numpy>=1.19.0",
-        "scipy>=1.5.0",
-        "pandas>=1.1.0",
-        "matplotlib>=3.3.0",
+        "scipy>=1.7.0",
+        "pandas>=1.3.0",
+        "matplotlib>=3.4.0",
         "seaborn>=0.11.0",
         "Pillow>=8.0.0",
         "openpyxl>=3.0.0"
@@ -36,6 +36,9 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
     ],
     python_requires=">=3.7",
 ) 

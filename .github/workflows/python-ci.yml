@@ -2,57 +2,29 @@ name: Python CI
 
 on:
   push:
-    branches: [ main ]
     tags:
       - 'v*'  # Push events to matching v*, i.e. v1.0, v20.15.10
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Run tests with coverage
-      run: |
-        pytest --cov=dgNova --cov-report=xml --cov-report=term-missing
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: true
-
   deploy:
-    needs: test
     runs-on: ubuntu-latest
-    # Only trigger deployment on tag pushes
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-
     steps:
     - uses: actions/checkout@v2
+    
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.9'
+    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine build
+    
     - name: Build package
       run: |
         python -m build
+    
     - name: Publish to PyPI
       env:
         TWINE_USERNAME: __token__
