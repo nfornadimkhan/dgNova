@@ -963,6 +963,7 @@ class DIALLEL:
         """
         # Create figure
         plt.figure(figsize=(12, 10))
+        ax = plt.gca()  # Get current axis
         
         # Create design matrix
         design = np.ones((self.parents, self.parents))
@@ -1006,7 +1007,7 @@ class DIALLEL:
                 if not mask[i, j]:  # Only show notation for visible cells
                     text = f'O({i+1},{j+1})'  # Simplified notation without extra labels
                     
-                    ax1.text(j + 0.5, i + 0.5, text,
+                    ax.text(j + 0.5, i + 0.5, text,
                             ha='center', va='center',
                             color='black',
                             fontsize=10,
@@ -1037,77 +1038,122 @@ class DIALLEL:
 
     def plot_design_scheme(self) -> None:
         """
-        Plot the basic diallel design scheme showing the structure:
-        - Upper triangle: F1 crosses
-        - Lower triangle: Reciprocal crosses
-        - Diagonal: Parents
+        Create a comprehensive visualization of the diallel design scheme
+        showing both raw crossing pattern and simulated data side by side.
         """
-        # Create design matrix
-        design = np.ones((self.parents, self.parents))
+        # Create figure with two subplots
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
         
-        # Fill different parts with different values
-        # Parents (diagonal) = 1
-        # F1s (upper triangle) = 2
-        # Reciprocals (lower triangle) = 3
-        for i in range(self.parents):
-            for j in range(self.parents):
-                if i < j:  # Upper triangle (F1s)
-                    design[i,j] = 2
-                elif i > j:  # Lower triangle (Reciprocals)
-                    design[i,j] = 3
+        # 1. Raw Crossing Scheme (Left Panel)
+        raw_design = np.ones((self.parents, self.parents))
         
-        # Create figure
-        plt.figure(figsize=(10, 8))
-        
-        # Create custom colormap
-        colors = ['red', 'yellow', 'blue']
-        cmap = plt.cm.colors.ListedColormap(colors)
-        
-        # Plot heatmap
-        sns.heatmap(design,
-                    cmap=cmap,
-                    center=0,
-                    cbar=False,
-                    square=True,
-                    linewidths=1,
-                    linecolor='black',
-                    annot=True,
-                    fmt='',
-                    annot_kws={'size': 12})
-        
-        # Add custom annotations
+        # Fill matrix
         for i in range(self.parents):
             for j in range(self.parents):
                 if i == j:
-                    plt.text(j + 0.5, i + 0.5, f'P{i+1}', 
-                            ha='center', va='center', color='white')
+                    raw_design[i,j] = 0
                 elif i < j:
-                    plt.text(j + 0.5, i + 0.5, f'F₁{i+1},{j+1}', 
-                            ha='center', va='center')
+                    raw_design[i,j] = 2
                 else:
-                    plt.text(j + 0.5, i + 0.5, f'R{j+1},{i+1}', 
-                            ha='center', va='center')
+                    raw_design[i,j] = 3
         
-        # Add labels
-        plt.title('Diallel Mating Design Scheme', pad=20)
-        plt.xlabel('Parent (♂)', labelpad=10)
-        plt.ylabel('Parent (♀)', labelpad=10)
+        # Custom colormap
+        colors_raw = ['lightgray', 'red', 'yellow', 'blue']
+        cmap_raw = plt.cm.colors.ListedColormap(colors_raw)
+        
+        # Plot raw scheme
+        sns.heatmap(raw_design,
+                    ax=ax1,
+                    cmap=cmap_raw,
+                    cbar=False,
+                    square=True,
+                    linewidths=1,
+                    linecolor='black')
+        
+        # Add custom annotations with adjusted positions
+        for i in range(self.parents):
+            for j in range(self.parents):
+                if i == j:
+                    ax1.text(j + 0.5, i + 0.5, '×', 
+                            ha='center', va='center', 
+                            color='black', fontsize=15)
+                elif i < j:
+                    ax1.text(j + 0.5, i + 0.5, f'F₁\n{i+1},{j+1}', 
+                            ha='center', va='center',
+                            fontsize=10)
+                else:
+                    ax1.text(j + 0.5, i + 0.5, f'R\n{j+1},{i+1}', 
+                            ha='center', va='center',
+                            fontsize=10)
+        
+        # Customize first plot
+        ax1.set_title('Raw Diallel Crossing Scheme', pad=20, fontsize=12)
+        ax1.set_xlabel('Parent (♂)', labelpad=10)
+        ax1.set_ylabel('Parent (♀)', labelpad=10)
         
         # Add parent labels
-        plt.xticks(np.arange(self.parents) + 0.5, [f'P{i+1}' for i in range(self.parents)])
-        plt.yticks(np.arange(self.parents) + 0.5, [f'P{i+1}' for i in range(self.parents)])
+        parent_labels = [f'P{i+1}' for i in range(self.parents)]
+        ax1.set_xticks(np.arange(self.parents) + 0.5)
+        ax1.set_yticks(np.arange(self.parents) + 0.5)
+        ax1.set_xticklabels(parent_labels, rotation=0)
+        ax1.set_yticklabels(parent_labels)
         
         # Add legend
-        from matplotlib.patches import Patch
-        legend_elements = [
-            Patch(facecolor='red', label='Parents (Pᵢᵢ)'),
-            Patch(facecolor='yellow', label='F₁ Crosses (F₁ᵢⱼ)'),
-            Patch(facecolor='blue', label='Reciprocals (Rⱼᵢ)')
+        legend_elements_raw = [
+            Patch(facecolor='lightgray', label='Self-crosses (×)'),
+            Patch(facecolor='yellow', label='F₁ Crosses'),
+            Patch(facecolor='blue', label='Reciprocals')
         ]
-        plt.legend(handles=legend_elements, 
-                  title='Cross Types',
-                  bbox_to_anchor=(1.15, 1),
-                  loc='upper right')
+        ax1.legend(handles=legend_elements_raw, 
+                   title='Cross Types',
+                   bbox_to_anchor=(1.05, 1),
+                   loc='upper left')
+        
+        # 2. Data Values (Right Panel)
+        # Create mask based on method
+        mask = np.zeros_like(self.data, dtype=bool)
+        if self.method == 2:  # Parents and F1's
+            mask[np.tril_indices_from(mask, k=-1)] = True
+        elif self.method == 3:  # F1's and reciprocals
+            np.fill_diagonal(mask, True)
+        elif self.method == 4:  # F1's only
+            mask[np.tril_indices_from(mask)] = True
+        
+        # Plot heatmap with actual data
+        sns.heatmap(self.data,
+                    mask=mask,
+                    ax=ax2,
+                    cmap='YlOrRd',
+                    center=np.mean(self.data[~mask]),
+                    square=True,
+                    linewidths=1,
+                    linecolor='black',
+                    cbar_kws={'label': 'Value'})
+        
+        # Add values only to unmasked squares
+        for i in range(self.parents):
+            for j in range(self.parents):
+                if not mask[i, j]:  # Only add text if position is not masked
+                    text = f'{self.data[i,j]:.2f}'
+                    ax2.text(j + 0.5, i + 0.5, text,
+                            ha='center', va='center',
+                            color='black' if self.data[i,j] < np.mean(self.data[~mask]) else 'white',
+                            fontsize=10,
+                            fontweight='bold')
+        
+        # Customize second plot
+        ax2.set_title(f'Diallel Cross Values (Method {self.method})', pad=20, fontsize=14)
+        ax2.set_xlabel('Parent (♂)', labelpad=10)
+        ax2.set_ylabel('Parent (♀)', labelpad=10)
+        
+        # Add parent labels to second plot
+        ax2.set_xticks(np.arange(self.parents) + 0.5)
+        ax2.set_yticks(np.arange(self.parents) + 0.5)
+        ax2.set_xticklabels(parent_labels, rotation=0)
+        ax2.set_yticklabels(parent_labels)
+        
+        # Main title
+        fig.suptitle('Diallel Mating Design Overview', fontsize=14, y=1.05)
         
         plt.tight_layout()
         plt.show()
@@ -1296,10 +1342,14 @@ class DIALLEL:
         ax2.set_xticklabels(parent_labels, rotation=0)
         ax2.set_yticklabels(parent_labels)
         
-        # Main title
-        fig.suptitle('Diallel Mating Design Overview', fontsize=14, y=1.05)
+        # Main title with truncation note if applicable
+        title = f'Diallel Analysis Overview - {self._get_method_description()}'
+        if self.parents > 7:
+            title += f'\n(Showing first 3 and last 3 of {self.parents} parents)'
+        fig.suptitle(title, fontsize=16, y=1.02)
         
-        plt.tight_layout()
+        # Adjust layout with specific spacing
+        plt.subplots_adjust(top=0.85, bottom=0.15, left=0.1, right=0.9)
         plt.show()
 
     def plot_interactive_diallel(self):
@@ -1638,7 +1688,7 @@ class DIALLEL:
                     actual_j = indices[j]
                     text = f'O({actual_i+1},{actual_j+1})'
                     
-                    ax1.text(j + 0.5, i + 0.5, text,
+                    ax.text(j + 0.5, i + 0.5, text,
                             ha='center', va='center',
                             color='black',
                             fontsize=10,
@@ -1894,14 +1944,14 @@ class DIALLEL:
         # Setup figure
         fig = plt.figure(figsize=(15, 8))
         gs = plt.GridSpec(2, 1, height_ratios=[1.5, 1], hspace=0.3)
-        ax1 = fig.add_subplot(gs[0])  # Matrix plot
-        ax2 = fig.add_subplot(gs[1])  # Table
-        ax2.axis('off')
+        ax_matrix = fig.add_subplot(gs[0])  # Matrix plot
+        ax_table = fig.add_subplot(gs[1])  # Table
+        ax_table.axis('off')
 
         def update(frame):
-            ax1.clear()
-            ax2.clear()
-            ax2.axis('off')
+            ax_matrix.clear()
+            ax_table.clear()
+            ax_table.axis('off')
             
             progress = frame / (frames - 1)
             
@@ -1943,14 +1993,14 @@ class DIALLEL:
                 weight = "Combined"
 
             # Plot matrix
-            im = ax1.imshow(matrix, cmap='RdYlBu', aspect='equal')
-            plt.colorbar(im, ax=ax1)
+            im = ax_matrix.imshow(matrix, cmap='RdYlBu', aspect='equal')
+            plt.colorbar(im, ax=ax_matrix)
             
             # Add value annotations
             for i in range(self.parents):
                 for j in range(self.parents):
                     if matrix[i,j] != 0:
-                        ax1.text(j, i, f'{matrix[i,j]:.2f}',
+                        ax_matrix.text(j, i, f'{matrix[i,j]:.2f}',
                                 ha='center', va='center',
                                 color='black' if matrix[i,j] < np.max(matrix)/2 else 'white')
 
@@ -1959,17 +2009,17 @@ class DIALLEL:
                 i, j = combo['i'], combo['j']
                 rect = plt.Rectangle((j-0.5, i-0.5), 1, 1, fill=False, 
                                    color='yellow', linewidth=2)
-                ax1.add_patch(rect)
+                ax_matrix.add_patch(rect)
                 rect = plt.Rectangle((i-0.5, j-0.5), 1, 1, fill=False, 
                                    color='yellow', linewidth=2)
-                ax1.add_patch(rect)
+                ax_matrix.add_patch(rect)
 
             # Configure matrix plot
-            ax1.set_xticks(range(self.parents))
-            ax1.set_yticks(range(self.parents))
-            ax1.set_xticklabels([f'P{i+1}' for i in range(self.parents)])
-            ax1.set_yticklabels([f'P{i+1}' for i in range(self.parents)])
-            ax1.set_title(f'{phase} (Weight: {weight})')
+            ax_matrix.set_xticks(range(self.parents))
+            ax_matrix.set_yticks(range(self.parents))
+            ax_matrix.set_xticklabels([f'P{i+1}' for i in range(self.parents)])
+            ax_matrix.set_yticklabels([f'P{i+1}' for i in range(self.parents)])
+            ax_matrix.set_title(f'{phase} (Weight: {weight})')
 
             # Table visualization
             headers = ['Cross', 'Response', 'GCA Sum', 'SCA', 'Heterosis', 'Score']
@@ -1993,7 +2043,7 @@ class DIALLEL:
                 table_data.append(row)
 
             # Create table with borders - ADJUSTED SCALE
-            table = ax2.table(cellText=table_data,
+            table = ax_table.table(cellText=table_data,
                              colLabels=headers,
                              loc='center',
                              cellLoc='center',
@@ -2024,7 +2074,7 @@ class DIALLEL:
                     table._cells[cell].set_facecolor('#e6e6e6')
             
             # Add title for the table
-            ax2.text(0.5, 1.0, f'Top 5 Combinations by {phase}',
+            ax_table.text(0.5, 1.0, f'Top 5 Combinations by {phase}',
                     ha='center', va='bottom', fontsize=12, fontweight='bold')
 
             return [im]
@@ -2057,3 +2107,36 @@ class DIALLEL:
                 print(f"Error saving GIF: {e}")
 
         plt.show()
+
+    def _plot_matrix_with_annotations(self, matrix, ax, title, mask=None):
+        """Helper method to plot matrix with annotations"""
+        if mask is None:
+            mask = np.zeros_like(matrix, dtype=bool)
+            
+        sns.heatmap(matrix,
+                   mask=mask,
+                   ax=ax,
+                   cmap='RdYlBu',
+                   center=0,
+                   annot=True,
+                   fmt='.2f',
+                   square=True)
+        
+        ax.set_title(title)
+        ax.set_xlabel('Parent (♂)')
+        ax.set_ylabel('Parent (♀)')
+        
+        # Add parent labels
+        ax.set_xticks(np.arange(self.parents) + 0.5)
+        ax.set_yticks(np.arange(self.parents) + 0.5)
+        ax.set_xticklabels([f'P{i+1}' for i in range(self.parents)])
+        ax.set_yticklabels([f'P{i+1}' for i in range(self.parents)])
+        
+        # Add text annotations
+        for i in range(self.parents):
+            for j in range(self.parents):
+                if not mask[i, j]:
+                    text = f'{matrix[i,j]:.2f}'
+                    ax.text(j + 0.5, i + 0.5, text,
+                           ha='center', va='center',
+                           color='black' if matrix[i,j] < np.mean(matrix) else 'white')
