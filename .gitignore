@@ -59,3 +59,10 @@ Thumbs.db
 spatial_adjustment.*
 simulated_results*.csv 
 .Rproj.user
+
+# Manim
+manim_cache/
+
+media/
+
+dgNova/animations/
