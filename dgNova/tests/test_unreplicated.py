@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from dgNova.designs import UNREP
+from dgNova.field_designs import UNREP
 from numpy.testing import assert_array_almost_equal, assert_almost_equal
 
 class TestUnreplicatedTrial:

@@ -38,7 +38,6 @@ wheels/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-*.ipynb
 
 # Environment
 .env
@@ -46,6 +45,9 @@ wheels/
 env/
 venv/
 ENV/
+
+# Output
+output/
 
 # Operating System
 .DS_Store
@@ -56,3 +58,4 @@ Thumbs.db
 *.mp4
 spatial_adjustment.*
 simulated_results*.csv 
+.Rproj.user
